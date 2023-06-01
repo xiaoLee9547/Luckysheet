@@ -19,7 +19,7 @@ export default function luckysheetsizeauto(isRefreshCanvas=true) {
     else {
         $("#luckysheet_info_detail").show();
         // Store.infobarHeight = 56;
-        Store.infobarHeight = document.querySelector('#luckysheet_info_detail').offsetHeight;
+        Store.infobarHeight = document.querySelector('#luckysheet_info_detail')?.offsetHeight || 0;
     }
 
     if (!!Store.toobarObject && !!Store.toobarObject.toobarElements && Store.toobarObject.toobarElements.length === 0) {
