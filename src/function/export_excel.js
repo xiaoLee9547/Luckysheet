@@ -96,9 +96,8 @@ const setImages = function (table, worksheet, workbook) {
             base64: myBase64Image,
             extension: 'png',
         })
-
-        const col_st = getImagePosition(item.default.left, visibledatacolumn)
-        const row_st = getImagePosition(item.default.top, visibledatarow)
+        const col_st = getImagePosition(item.default.left, visibledatacolumn || [])
+        const row_st = getImagePosition(item.default.top, visibledatarow || [])
 
         // 模式1，图片左侧与luckysheet位置一样，像素比例保持不变，但是，右侧位置可能与原图所在单元格不一致
         worksheet.addImage(imageId, {
@@ -144,19 +143,19 @@ const setBorder = function (lucksheetfile, worksheet) {
         const info = borderInfoCompute[x]
         const row = parseInt(x.substr(0, x.indexOf('_')))
         const column = parseInt(x.substr(x.indexOf('_') + 1))
-        if (info.t !== undefined) {
+        if (info.t) {
             const tcolor = info.t.color.includes('rgb') ? rgb2hex(info.t.color) : info.t.color
             border.top = { style: luckyToExcel.style[info.t.style], color: { argb: tcolor.replace('#', '') } }
         }
-        if (info.r !== undefined) {
+        if (info.r) {
             const rcolor = info.r.color.includes('rgb') ? rgb2hex(info.r.color) : info.r.color
             border.right = { style: luckyToExcel.style[info.r.style], color: { argb: rcolor.replace('#', '') } }
         }
-        if (info.b !== undefined) {
+        if (info.b) {
             const bcolor = info.b.color.includes('rgb') ? rgb2hex(info.b.color) : info.b.color
             border.bottom = { style: luckyToExcel.style[info.b.style], color: { argb: bcolor.replace('#', '') } }
         }
-        if (info.l !== undefined) {
+        if (info.l) {
             const lcolor = info.l.color.includes('rgb') ? rgb2hex(info.l.color) : info.l.color
             border.left = { style: luckyToExcel.style[info.l.style], color: { argb: lcolor.replace('#', '') } }
         }
@@ -402,10 +401,9 @@ const getBorderInfo = function (luckysheetfile) {
                                     }
                                 }
                                 else {
-                                    if (borderInfoCompute[`${bd_r}_${bd_c}`] === null) {
+                                    if (!borderInfoCompute[`${bd_r}_${bd_c}`]) {
                                         borderInfoCompute[`${bd_r}_${bd_c}`] = {}
                                     }
-
                                     borderInfoCompute[`${bd_r}_${bd_c}`].l = { color: borderColor, style: borderStyle }
                                     borderInfoCompute[`${bd_r}_${bd_c}`].r = { color: borderColor, style: borderStyle }
                                     borderInfoCompute[`${bd_r}_${bd_c}`].t = { color: borderColor, style: borderStyle }
@@ -1054,6 +1052,7 @@ const getBorderInfo = function (luckysheetfile) {
                             }
                         }
                         else {
+                            if(!borderInfoCompute[`${bd_r}_${bd_c}`]) borderInfoCompute[`${bd_r}_${bd_c}`] = {}
                             borderInfoCompute[`${bd_r}_${bd_c}`].l = null
                         }
 
@@ -1154,6 +1153,7 @@ const getBorderInfo = function (luckysheetfile) {
                             }
                         }
                         else {
+                            if(!borderInfoCompute[`${bd_r}_${bd_c}`]) borderInfoCompute[`${bd_r}_${bd_c}`] = {}
                             borderInfoCompute[`${bd_r}_${bd_c}`].l = null
                         }
 
