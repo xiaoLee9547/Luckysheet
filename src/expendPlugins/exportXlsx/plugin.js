@@ -5,6 +5,8 @@ import { replaceHtml } from '../../utils/util';
 import tooltip from '../../global/tooltip';
 import { getSheetIndex } from '../../methods/get';
 import Store from '../../store';
+import {exportSheetExcel} from "../../function/export_excel";
+import {luckysheet} from "../../core";
 
 // Initialize the export xlsx api
 function exportXlsx(options, config, isDemo) {
@@ -22,10 +24,10 @@ function downloadXlsx(data, filename) {
 }
 
 /**
- * 
- * @param {*} url 
- * @param {*} success 
- * @param {*} fail 
+ *
+ * @param {*} url
+ * @param {*} success
+ * @param {*} fail
  */
 function fetchAndDownloadXlsx({url,order}, success, fail) {
     const luckyJson = luckysheet.toJson();
@@ -62,9 +64,9 @@ function fetchAndDownloadXlsx({url,order}, success, fail) {
 
 }
 
-function createExportDialog(url) {
+function createExportDialog() {
     $("#luckysheet-modal-dialog-mask").hide();
-    var xlsxContainer = $("#luckysheet-export-xlsx");
+    const xlsxContainer = $("#luckysheet-export-xlsx");
 
     if (xlsxContainer.length === 0) {
 
@@ -73,11 +75,8 @@ function createExportDialog(url) {
         const locale_button = _locale.button;
 
         let content = `<div class="luckysheet-export-xlsx-content" style="padding: 10px 10px 10px 0;">
-                <span>${locale_exportXlsx.range}</span>
-                <select class="luckysheet-export-xlsx-select-area">
-                    <option value="allSheets" selected="selected">${locale_exportXlsx.allSheets}</option>
-                    <option value="currentSheet">${locale_exportXlsx.currentSheet}</option>
-                </select>
+                <span>${locale_exportXlsx.fileName}</span>
+                <input class="luckysheet-export-xlsx-filename" />
         </div>`;
 
         $("body").append(
@@ -92,29 +91,16 @@ function createExportDialog(url) {
             }),
         );
 
-        selectedOption = 'allSheets'
-
         // init event
         $("#luckysheet-export-xlsx .luckysheet-model-confirm-btn").on('click',()=>{
-            luckysheet.showLoadingProgress()
-
-            var order = 'all'
-            if(selectedOption === 'currentSheet'){
-                order = getSheetIndex(Store.currentSheetIndex)
+            const fileName = $('.luckysheet-export-xlsx-filename').val();
+            if(!fileName){
+                tooltip.info(locale_exportXlsx.fileNameEmpty, "");
+            } else {
+                $("#luckysheet-export-xlsx").hide()
+                exportSheetExcel(luckysheet, fileName);
             }
-            fetchAndDownloadXlsx({url,order},()=>{
-                luckysheet.hideLoadingProgress()
-            },()=>{
-                luckysheet.hideLoadingProgress()
-                tooltip.info(_locale.exportXlsx.serverError, "");
-            })
-            $("#luckysheet-export-xlsx").hide()
         })
-
-        $("#luckysheet-export-xlsx .luckysheet-export-xlsx-select-area").change(function() {
-            selectedOption = $(this).val();
-          });
-
     }
 
 

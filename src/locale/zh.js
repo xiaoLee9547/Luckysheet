@@ -7322,8 +7322,7 @@ export default {
         notice: "请配置导出插件",
         serverError: "服务器正在维护",
         title: "导出XLSX",
-        range: "范围",
-        currentSheet: "当前工作表",
-        allSheets: "所有工作表",
+        fileName: "文件名",
+        fileNameEmpty: '文件名不能为空',
     },
 };

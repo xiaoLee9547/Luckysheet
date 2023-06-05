@@ -7014,9 +7014,8 @@ export default {
         notice:'請配置導出插件',
         serverError:'服務器正在維護',
         title:'導出XLSX',
-        range: "範圍",
-        currentSheet: "當前工作表",
-        allSheets: "所有工作表",
+        fileName: "文件名",
+        fileNameEmpty: '文件名不能為空',
     }
 
 };

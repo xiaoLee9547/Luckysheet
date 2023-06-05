@@ -7347,8 +7347,7 @@ export default {
         notice: "Please configure the export plugin",
         serverError: "server is under maintenance",
         title: "Export XLSX",
-        range: "Range",
-        currentSheet: "Current sheet",
-        allSheets: "All sheets",
+        fileName: "file name",
+        fileNameEmpty: 'file name can not be empty',
     },
 };
