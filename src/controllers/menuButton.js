@@ -3603,72 +3603,14 @@ const menuButton = {
         $("#luckysheet-icon-print").click(function() {
             let menuButtonId = $(this).attr("id") + "-menuButton";
             let $menuButton = $("#" + menuButtonId);
-            const _locale = locale();
-            const locale_print = _locale.print;
-            if ($menuButton.length == 0) {
-                let itemdata = [
-                    {
-                        text: locale_print.menuItemPrint,
-                        value: "print",
-                        example: '<i class="iconfont luckysheet-iconfont-dayin" aria-hidden="true"></i>',
-                    },
-                    { text: "", value: "split", example: "" },
-                    {
-                        text: locale_print.menuItemAreas,
-                        value: "areas",
-                        example: '<i class="iconfont luckysheet-iconfont-tihuan" aria-hidden="true"></i>',
-                    },
-                    {
-                        text: locale_print.menuItemRows,
-                        value: "rows",
-                        example: '<i class="iconfont luckysheet-iconfont-zhuandao1" aria-hidden="true"></i>',
-                    },
-                    {
-                        text: locale_print.menuItemColumns,
-                        value: "columns",
-                        example: '<i class="iconfont luckysheet-iconfont-dingwei" aria-hidden="true"></i>',
-                    },
-                ];
-
-                let itemset = _this.createButtonMenu(itemdata);
-
-                let menu = replaceHtml(_this.menu, { id: "print", item: itemset, subclass: "", sub: "" });
-
-                $("body").append(menu);
-                $menuButton = $("#" + menuButtonId).width(180);
-
-                $menuButton.find(".luckysheet-cols-menuitem").click(function() {
-                    $menuButton.hide();
-                    luckysheetContainerFocus();
-
-                    let $t = $(this),
-                        itemvalue = $t.attr("itemvalue");
-
-                    if (itemvalue == "print") {
-                        //Print config
-                        if (Store.luckysheetPrint) {
-                            luckysheetPrint = Store.luckysheetPrint;
-                            const plugin = Store.plugins.find((item) => item.name === "print");
-                            if (plugin && plugin.config) {
-                                luckysheetPrint.createDialog();
-                                luckysheetPrint.init(plugin.config.license);
-                            }
-                        }
-                    } else if (itemvalue == "areas" || itemvalue == "rows" || itemvalue == "columns") {
-                        //range
-                        alert("areas");
-                    }
-                });
+            if (Store.luckysheetPrint) {
+                luckysheetPrint = Store.luckysheetPrint;
+                const plugin = Store.plugins.find((item) => item.name === "print");
+                if (plugin && plugin.config) {
+                    luckysheetPrint.createDialog();
+                    luckysheetPrint.init(plugin.config.license);
+                }
             }
-
-            let userlen = $(this).outerWidth();
-            let tlen = $menuButton.outerWidth();
-
-            let menuleft = $(this).offset().left;
-            if (tlen > userlen && tlen + menuleft > $("#" + Store.container).width()) {
-                menuleft = menuleft - tlen + userlen;
-            }
-            mouseclickposition($menuButton, menuleft, $(this).offset().top + 25, "lefttop");
         });
 
         $("body")
