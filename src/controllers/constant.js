@@ -14,7 +14,7 @@ const gridHTML = function() {
             : luckysheetConfigsetting.userInfo; // When true, use the default HTML string. The rendering of userInfo below uses nested template strings. Otherwise, when display is used and the image path is not passed in, there will be an undefined request
 
     return `<div class="luckysheet">
-                    <canvas id="luckysheetTableContentF" style="display:none;" class="luckysheetTableContent"></canvas> 
+                    <canvas id="luckysheetTableContentF" style="display:none;" class="luckysheetTableContent"></canvas>
                     <div class="luckysheet-work-area luckysheet-noselected-text"> 
                         <div id="luckysheet-wa-editor" class="luckysheet-wa-editor toolbar"> \${menu} </div> 
                         <div id="luckysheet-wa-calculate" class="luckysheet-wa-calculate"> 

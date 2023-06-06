@@ -24,7 +24,6 @@ import { getcellvalue, getdatabyselection } from "./global/getdata";
 import { setcellvalue } from "./global/setdata";
 import { selectHightlightShow } from "./controllers/select";
 import { zoomInitial } from "./controllers/zoom";
-// import { printInitial } from "./controllers/print";
 import method from "./global/method";
 
 import * as api from "./global/api";

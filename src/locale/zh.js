@@ -7282,10 +7282,9 @@ export default {
         layoutBtn: "页面布局",
         pageBtn: "分页预览",
 
-        menuItemPrint: "打印(Ctrl+P)",
+        menuItemPrint: "打印工作表",
         menuItemAreas: "打印区域",
-        menuItemRows: "打印标题行",
-        menuItemColumns: "打印标题列",
+        printAllSheets: "打印工作簿",
         suggest: "对打印功能有什么建议？",
         range: "打印范围",
         size: "纸张大小",

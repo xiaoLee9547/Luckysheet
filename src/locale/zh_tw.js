@@ -6994,10 +6994,9 @@ export default {
         layoutBtn: "頁面佈局",
         pageBtn  : "分頁預覽",
 
-        menuItemPrint  : "列印(Ctrl+P)",
+        menuItemPrint  : "列印工作表",
         menuItemAreas  : "列印區域",
-        menuItemRows   : "列印標題行",
-        menuItemColumns: "列印標題列",
+        printAllSheets: "列印工作簿",
     },
     edit: {
         typing: "正在輸入",

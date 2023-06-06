@@ -7306,10 +7306,9 @@ export default {
         layoutBtn: "Page Layout",
         pageBtn: "Page break preview",
 
-        menuItemPrint: "Print (Ctrl+P)",
+        menuItemPrint: "Print sheet",
         menuItemAreas: "Print areas",
-        menuItemRows: "Print title rows",
-        menuItemColumns: "Print title columns",
+        printAllSheets: "Print workbook",
         suggest: "Any suggestions for the print function?",
         range: "Print Range",
         size: "Paper Size",

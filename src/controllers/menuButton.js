@@ -1,57 +1,51 @@
-import { selectionCopyShow, selectIsOverlap } from "./select";
-import { luckyColor, iconfontObjects } from "./constant";
+import printJS from 'print-js';
+import {selectionCopyShow, selectIsOverlap} from "./select";
+import {iconfontObjects, luckyColor} from "./constant";
 import luckysheetConfigsetting from "./luckysheetConfigsetting";
 import luckysheetMoreFormat from "./moreFormat";
 import alternateformat from "./alternateformat";
 import conditionformat from "./conditionformat";
 import server from "./server";
-import { luckysheet_searcharray } from "./sheetSearch";
+import {luckysheet_searcharray} from "./sheetSearch";
 import luckysheetFreezen from "./freezen";
 import luckysheetsizeauto from "./resize";
-import { createFilter } from "./filter";
+import {createFilter} from "./filter";
 import luckysheetSearchReplace from "./searchReplace";
 import luckysheetLocationCell from "./locationCell";
 import ifFormulaGenerator from "./ifFormulaGenerator";
-import { luckysheetupdateCell } from "./updateCell";
+import {luckysheetupdateCell} from "./updateCell";
 import insertFormula from "./insertFormula";
 import sheetmanage from "./sheetmanage";
 import luckysheetPostil from "./postil";
-import { isRealNum, isRealNull, isEditMode, hasPartMC, checkIsAllowEdit } from "../global/validate";
+import {checkIsAllowEdit, hasPartMC, isEditMode, isRealNull, isRealNum} from "../global/validate";
 import tooltip from "../global/tooltip";
 import editor from "../global/editor";
-import { genarate, update, is_date } from "../global/format";
-import { jfrefreshgrid, luckysheetrefreshgrid } from "../global/refresh";
-import { sortSelection } from "../global/sort";
+import {genarate, is_date, update} from "../global/format";
+import {jfrefreshgrid, luckysheetrefreshgrid} from "../global/refresh";
+import {sortSelection} from "../global/sort";
 import luckysheetformula from "../global/formula";
-import { rowLocationByIndex, colLocationByIndex } from "../global/location";
-import { isdatatypemulti } from "../global/datecontroll";
-import { rowlenByRange, getCellTextSplitArr } from "../global/getRowlen";
-import { setcellvalue } from "../global/setdata";
-import { getFontStyleByCell, checkstatusByCell } from "../global/getdata";
-import { countfunc } from "../global/count";
-import { hideMenuByCancel } from "../global/cursorPos";
-import { getSheetIndex, getRangetxt, getluckysheetfile } from "../methods/get";
-import { setluckysheetfile } from "../methods/set";
+import {colLocationByIndex, rowLocationByIndex} from "../global/location";
+import {isdatatypemulti} from "../global/datecontroll";
+import {rowlenByRange} from "../global/getRowlen";
+import {setcellvalue} from "../global/setdata";
+import {checkstatusByCell, getFontStyleByCell} from "../global/getdata";
+import {countfunc} from "../global/count";
+import {hideMenuByCancel} from "../global/cursorPos";
+import {getluckysheetfile, getRangetxt, getSheetIndex} from "../methods/get";
+import {setluckysheetfile} from "../methods/set";
 import {
+    convertCssToStyleList,
+    inlineStyleAffectAttribute,
     isInlineStringCell,
     isInlineStringCT,
     updateInlineStringFormat,
-    convertCssToStyleList,
-    inlineStyleAffectAttribute,
     updateInlineStringFormatOutside,
 } from "./inlineString";
-import {
-    replaceHtml,
-    getObjType,
-    rgbTohex,
-    mouseclickposition,
-    luckysheetfontformat,
-    luckysheetContainerFocus,
-} from "../utils/util";
-import { openProtectionModal, checkProtectionFormatCells, checkProtectionNotEnable } from "./protection";
+import {getObjType, luckysheetContainerFocus, mouseclickposition, replaceHtml,} from "../utils/util";
+import {checkProtectionFormatCells, checkProtectionNotEnable, openProtectionModal} from "./protection";
 import Store from "../store";
 import locale from "../locale/locale";
-import { checkTheStatusOfTheSelectedCells, frozenFirstRow, frozenFirstColumn } from "../global/api";
+import {checkTheStatusOfTheSelectedCells, frozenFirstColumn, frozenFirstRow, getScreenshot} from "../global/api";
 
 const menuButton = {
     menu:
@@ -3601,17 +3595,113 @@ const menuButton = {
 
         //print
         $("#luckysheet-icon-print").click(function() {
-            let menuButtonId = $(this).attr("id") + "-menuButton";
-            let $menuButton = $("#" + menuButtonId);
-            if (Store.luckysheetPrint) {
-                luckysheetPrint = Store.luckysheetPrint;
-                const plugin = Store.plugins.find((item) => item.name === "print");
-                if (plugin && plugin.config) {
-                    luckysheetPrint.createDialog();
-                    luckysheetPrint.init(plugin.config.license);
+                let menuButtonId = $(this).attr("id") + "-menuButton";
+                let $menuButton = $(`#${menuButtonId}`);
+                $menuButton.show();
+                const _locale = locale();
+                const locale_print = _locale.print;
+                if ($menuButton.length === 0) {
+                    let itemdata = [
+                        {
+                            text: locale_print.menuItemAreas,
+                            value: "areas",
+                            example: '<i class="iconfont luckysheet-iconfont-dayinquyu" style="line-height: 18px;" aria-hidden="true"></i>',
+                        },
+                        {text: "", value: "split", example: ""},
+                        {
+                            text: locale_print.menuItemPrint,
+                            value: "sheet",
+                            example: '<i class="iconfont luckysheet-iconfont-dayin" style="line-height: 18px;" aria-hidden="true"></i>',
+                        },
+                        {text: "", value: "split", example: ""},
+                        {
+                            text: locale_print.printAllSheets,
+                            value: "workbook",
+                            example: '<i class="iconfont luckysheet-iconfont-dayinyemianpeizhi" style="line-height: 18px;" aria-hidden="true"></i>',
+                        },
+                    ];
+
+                    let itemset = _this.createButtonMenu(itemdata);
+
+                    let menu = replaceHtml(_this.menu, {id: "print", item: itemset, subclass: "", sub: ""});
+
+                    $("body").append(menu);
+                    $menuButton = $("#" + menuButtonId).width(180);
+
+                    $menuButton.find(".luckysheet-cols-menuitem").click(async function () {
+                        $menuButton.hide();
+                        luckysheetContainerFocus();
+
+                        let $t = $(this),
+                            itemvalue = $t.attr("itemvalue");
+
+                        if (itemvalue === "sheet") {
+                            //Print config
+                            const sheetData = Store.luckysheetfile[getSheetIndex(Store.currentSheetIndex)].data
+                            let rowEnd = -1
+                            let colEnd = -1
+                            // 获取最小有值的区域
+                            for (let i = 0; i < sheetData.length; i++) {
+                                for (let j = 0; j < sheetData[i].length; j++) {
+                                    if(sheetData[i][j] !== null) {
+                                        rowEnd = Math.max(rowEnd, i)
+                                        colEnd = Math.max(colEnd, j)
+                                    }
+                                }
+                            }
+                            const src = getScreenshot({
+                                row: [0, rowEnd],
+                                column: [0, colEnd]
+                            })
+                            printJS(src, 'image')
+                        } else if (itemvalue === 'areas') {
+                            //range
+                            const sheet = Store.luckysheetfile[getSheetIndex(Store.currentSheetIndex)]
+                            const rowRange = sheet.luckysheet_select_save[0].row
+                            const colRange = sheet.luckysheet_select_save[0].column
+                            const src = getScreenshot({
+                                row: rowRange,
+                                column: colRange
+                            })
+                            printJS(src, 'image')
+                        } else {
+                            // workbook
+                            const workbook = Store.luckysheetfile
+                            const allSheetsImages = workbook.map((sheet, sheetIndex) => {
+                                let rowEnd = 0
+                                let colEnd = 0
+                                // 获取最小有值的区域
+                                for (let i = 0; i < sheet.data.length; i++) {
+                                    for (let j = 0; j < sheet.data[i].length; j++) {
+                                        if(sheet.data[i][j] !== null) {
+                                            rowEnd = Math.max(rowEnd, i)
+                                            colEnd = Math.max(colEnd, j)
+                                        }
+                                    }
+                                }
+                                sheetmanage.changeSheet(sheetIndex)
+                                return getScreenshot({
+                                    row: [0, rowEnd],
+                                    column: [0, colEnd]
+                                })
+                            })
+                            printJS({
+                                printable: allSheetsImages,
+                                type: 'image',
+                                style: 'img { max-width: 400px;}'
+                            })
+                        }
+                    })
+                    let userlen = $(this).outerWidth();
+                    let tlen = $menuButton.outerWidth();
+
+                    let menuleft = $(this).offset().left;
+                    if (tlen > userlen && tlen + menuleft > $("#" + Store.container).width()) {
+                        menuleft = menuleft - tlen + userlen;
+                    }
+                    mouseclickposition($menuButton, menuleft, $(this).offset().top + 25, "lefttop");
                 }
-            }
-        });
+            });
 
         $("body")
             .on("mouseover mouseleave", ".luckysheet-menuButton .luckysheet-cols-submenu", function(e) {

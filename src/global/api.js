@@ -1,26 +1,24 @@
 import Store from "../store";
-import { replaceHtml, getObjType, chatatABC, luckysheetactiveCell } from "../utils/util";
-import { getSheetIndex, getluckysheet_select_save, getluckysheetfile } from "../methods/get";
+import {chatatABC, getObjType, luckysheetactiveCell, replaceHtml} from "../utils/util";
+import {getluckysheetfile, getRangetxt, getSheetIndex} from "../methods/get";
 import locale from "../locale/locale";
 import method from './method';
 import formula from './formula';
+import luckysheetformula from './formula';
 import func_methods from "./func_methods";
 import tooltip from "./tooltip";
-import json from "./json";
 import editor from "./editor";
-import luckysheetformula from './formula';
 import cleargridelement from './cleargridelement';
-import { genarate, update } from './format';
-import { setAccuracy,setcellvalue } from "./setdata";
-import { orderbydata } from "./sort";
-import { rowlenByRange } from "./getRowlen";
-import { getdatabyselection, getcellvalue } from "./getdata";
-import { luckysheetrefreshgrid, jfrefreshgrid, jfrefreshgrid_rhcw } from "./refresh";
-import { luckysheetDeleteCell, luckysheetextendtable, luckysheetdeletetable } from "./extend";
-import { isRealNull, valueIsError, isRealNum, isEditMode, hasPartMC } from "./validate";
-import { isdatetime, diff } from "./datecontroll";
-import { getBorderInfoCompute } from './border';
-import { luckysheetDrawMain } from './draw';
+import {setcellvalue} from "./setdata";
+import {orderbydata} from "./sort";
+import {rowlenByRange} from "./getRowlen";
+import {getcellvalue, getdatabyselection} from "./getdata";
+import {jfrefreshgrid, jfrefreshgrid_rhcw, luckysheetrefreshgrid} from "./refresh";
+import {luckysheetDeleteCell, luckysheetdeletetable, luckysheetextendtable} from "./extend";
+import {hasPartMC, isEditMode, isRealNull, isRealNum} from "./validate";
+import {diff, isdatetime} from "./datecontroll";
+import {getBorderInfoCompute} from './border';
+import {luckysheetDrawMain} from './draw';
 import pivotTable from '../controllers/pivotTable';
 import server from "../controllers/server";
 import menuButton from '../controllers/menuButton';
@@ -30,16 +28,15 @@ import luckysheetFreezen from "../controllers/freezen";
 import luckysheetsizeauto from '../controllers/resize';
 import sheetmanage from '../controllers/sheetmanage';
 import conditionformat from '../controllers/conditionformat';
-import { luckysheet_searcharray } from "../controllers/sheetSearch";
-import { selectHightlightShow, selectIsOverlap } from '../controllers/select';
-import { sheetHTML, luckysheetdefaultstyle } from '../controllers/constant';
-import { createFilterOptions } from '../controllers/filter';
+import {luckysheet_searcharray} from "../controllers/sheetSearch";
+import {selectHightlightShow, selectIsOverlap} from '../controllers/select';
+import {luckysheetdefaultstyle, sheetHTML} from '../controllers/constant';
+import {createFilterOptions} from '../controllers/filter';
 import controlHistory from '../controllers/controlHistory';
-import { zoomRefreshView, zoomNumberDomBind } from '../controllers/zoom';
+import {zoomNumberDomBind, zoomRefreshView} from '../controllers/zoom';
 import dataVerificationCtrl from "../controllers/dataVerificationCtrl";
 import imageCtrl from '../controllers/imageCtrl';
 import dayjs from "dayjs";
-import {getRangetxt } from '../methods/get';
 import {luckysheetupdateCell} from '../controllers/updateCell';
 import luckysheetSearchReplace from "../controllers/searchReplace";
 
@@ -5698,23 +5695,8 @@ export function resize(options = {}){
  * @param {Object | String} options.range 选区范围，只能为单个选区；默认为当前选区
  */
 export function getScreenshot(options = {}) {
-    let {
-        range = Store.luckysheet_select_save[Store.luckysheet_select_save.length - 1],
-    } = {...options}
-
-    if(getObjType(range) == 'string'){
-        if(!formula.iscelldata(range)){
-            return tooltip.info("The range parameter is invalid.", "");
-        }
-
-        let cellrange = formula.getcellrange(range);
-        range = {
-            "row": cellrange.row,
-            "column": cellrange.column
-        };
-    }
-
-    if(getObjType(range) != 'object' || range.row == null || range.column == null){
+    const range = options
+    if(getObjType(range) !== 'object' || range.row == null || range.column == null){
         return tooltip.info("The range parameter is invalid.", "");
     }
 
@@ -5722,9 +5704,7 @@ export function getScreenshot(options = {}) {
         edr = range.row[1],
         stc = range.column[0],
         edc = range.column[1];
-
     let has_PartMC = hasPartMC(Store.config, str, edr, stc, edc);
-
     if(has_PartMC){
         return tooltip.info('Cannot perform this operation on partially merged cells', '');
     }
@@ -5789,9 +5769,7 @@ export function getScreenshot(options = {}) {
     ctx_newCanvas.stroke();
     ctx_newCanvas.closePath();
 
-    let url = newCanvas.get(0).toDataURL("image/png");
-
-    return url;
+    return newCanvas.get(0).toDataURL("image/png");
 }
 
 
@@ -5934,7 +5912,7 @@ export function getAllChartsBase64(cb) {
                 }})
 
                 chartMap[item.index][chartInfo.chart_id] = chartInstance
-                
+
             });
 
         }
@@ -5950,13 +5928,13 @@ export function getAllChartsBase64(cb) {
                         sheet[chart_id] = chartInstance.getDataURL();
                     }
                 }
-                
+
             }
         }
         cb && cb(chartMap)
-        
+
     }, 500);
-    
+
 }
 
 /**
